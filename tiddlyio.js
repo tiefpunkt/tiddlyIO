@@ -175,4 +175,47 @@ var TiddlyIO = {
 		}
 		return content.join("\n");
 	}
+	
+	getLocalPath: function(origPath) {
+		var originalPath = convertUriToUTF8(origPath,"UTF-8");
+		// Remove any location or query part of the URL
+		var argPos = originalPath.indexOf("?");
+		if(argPos != -1)
+			originalPath = originalPath.substr(0,argPos);
+		var hashPos = originalPath.indexOf("#");
+		if(hashPos != -1)
+			originalPath = originalPath.substr(0,hashPos);
+		// Convert file://localhost/ to file:///
+		if(originalPath.indexOf("file://localhost/") == 0)
+			originalPath = "file://" + originalPath.substr(16);
+		// Convert to a native file format
+		var localPath;
+		if(originalPath.charAt(9) == ":") // pc local file
+			localPath = unescape(originalPath.substr(8)).replace(new RegExp("/","g"),"\\");
+		else if(originalPath.indexOf("file://///") == 0) // FireFox pc network file
+			localPath = "\\\\" + unescape(originalPath.substr(10)).replace(new RegExp("/","g"),"\\");
+		else if(originalPath.indexOf("file:///") == 0) // mac/unix local file
+			localPath = unescape(originalPath.substr(7));
+		else if(originalPath.indexOf("file:/") == 0) // mac/unix local file
+			localPath = unescape(originalPath.substr(5));
+		else // pc network file
+			localPath = "\\\\" + unescape(originalPath.substr(7)).replace(new RegExp("/","g"),"\\");
+
+			return localPath;
+	}
+
+	convertUriToUTF8: function(uri,charSet) {
+		if(window.netscape == undefined || charSet == undefined || charSet == "")
+			return uri;
+		try {
+			netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+			var converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].getService(Components.interfaces.nsIUTF8ConverterService);
+		} catch(ex) {
+			return uri;
+		}
+		return converter.convertURISpecToUTF8(uri,charSet);
+	}
+	
+	documentPath : document.location.toString();
+	localPath : getLocalPath(documentPath);
 }
