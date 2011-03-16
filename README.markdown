@@ -3,3 +3,6 @@ TiddlyIO is JavaScript library to access files on the local system. As one might
 
 ## Inspiration
 See [http://www.tiddlywiki.com/](http://www.tiddlywiki.com/)
+
+## License
+TiddlyIO is licensed under the MIT License. For more information, see the LICENSE.markdown file.

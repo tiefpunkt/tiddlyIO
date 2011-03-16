@@ -1,3 +1,11 @@
+/*
+*	TiddlyIO.js v0.1
+*   JavaScript Library to access files on your local harddrive
+*
+*	Copyright (c) 2011 Severin Schols
+*   Licensed under the MIT license. See LICENSE.markdown for details.
+*/
+
 function TiddlyIO() {
 	this.documentPath = document.location.toString();
 	this.localPath = this.getLocalPath(this.documentPath);
