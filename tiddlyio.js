@@ -212,18 +212,24 @@ TiddlyIO.prototype.getLocalPath = function (origPath) {
 		originalPath = "file://" + originalPath.substr(16);
 	// Convert to a native file format
 	var localPath;
-	if (originalPath.charAt(9) == ":") // pc local file
+	if (originalPath.charAt(9) == ":") { // pc local file
 		localPath = unescape(originalPath.substr(8)).replace(new RegExp("/", "g"), "\\");
-	else if (originalPath.indexOf("file://///") === 0) // FireFox pc network file
+		this.separator = "\\";
+	} else if (originalPath.indexOf("file://///") === 0) { // FireFox pc network file
 		localPath = "\\\\" + unescape(originalPath.substr(10)).replace(new RegExp("/", "g"), "\\");
-	else if (originalPath.indexOf("file:///") === 0) // mac/unix local file
+		this.separator = "\\";
+	} else if (originalPath.indexOf("file:///") === 0) { // mac/unix local file
 		localPath = unescape(originalPath.substr(7));
-	else if (originalPath.indexOf("file:/") === 0) // mac/unix local file
+		this.separator = "/";
+	} else if (originalPath.indexOf("file:/") === 0) { // mac/unix local file
 		localPath = unescape(originalPath.substr(5));
-	else // pc network file
+		this.separator = "/";
+	} else { // pc network file
 		localPath = "\\\\" + unescape(originalPath.substr(7)).replace(new RegExp("/", "g"), "\\");
+		this.separator = "\\";
+	}
 
-		return localPath;
+	return localPath;
 };
 
 TiddlyIO.prototype.convertUriToUTF8 = function (uri, charSet) {
